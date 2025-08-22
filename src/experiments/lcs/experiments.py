@@ -40,7 +40,7 @@ def ejecutar_prueba_lcs_api():
     except Exception as e:
         print(f"\n❌ ERROR: Ocurrió un error al llamar a la función de la API.")
         print(f"   Asegúrate de que la función 'comparar_archivos_codigo_api' en 'src/integration/api.py'")
-        print(f"   y sus dependencias ('tokenize_code', 'lcs_weighted') estén completas y sin errores.")
+        print(f"   y sus dependencias ('tokenize_code', 'comparar_archivos_codigo_api') estén completas y sin errores.")
         print(f"   Error original: {e}")
         return
 
