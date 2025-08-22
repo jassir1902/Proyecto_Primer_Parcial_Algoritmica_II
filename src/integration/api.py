@@ -3,10 +3,11 @@
 import os
 from ..projects_management.project_manager import cargar_proyectos
 # No necesitamos importar registrar/eliminar aquí, se manejan en su propio módulo.
-from ..obst.obst import optimal_bst
+from ..obst.obst import optimal_bst, reconstruir_arbol
 from ..lcs_detector.lcs_weighted import lcs_weighted
 from ..lcs_detector.tokenizer import tokenize_code
 from ..utils.probability_calculator import obtener_probabilidades_de_documento
+from ..obst.tree_utils import dibujar_arbol
 
 # --- API de Gestión de Proyectos (Sin cambios, ya era correcta) ---
 
@@ -49,6 +50,22 @@ def analizar_documentacion_api(proyecto_nombre):
         return {"status": "error", "message": "No se pudieron extraer términos clave del documento."}
 
     costo, root_table = optimal_bst(terminos, p, q)
+
+    # --- NUEVA LÓGICA ---
+    # 2. Reconstruir el árbol a partir de la tabla de raíces
+    print("Reconstruyendo el árbol para visualización...")
+    n = len(terminos)
+    arbol_reconstruido_root = reconstruir_arbol(root_table, terminos, 1, n)
+
+    # 3. Dibujar el árbol reconstruido
+    if arbol_reconstruido_root:
+        print("Iniciando la visualización del árbol...")
+        # El nombre del archivo puede ser dinámico para no sobreescribir
+        nombre_archivo_arbol = f"obst_{proyecto_nombre}" 
+        dibujar_arbol(arbol_reconstruido_root, filename=nombre_archivo_arbol)
+    else:
+        print("No se pudo reconstruir el árbol para dibujarlo.")
+    # --- FIN DE LA NUEVA LÓGICA ---
 
     return {
         "status": "success",

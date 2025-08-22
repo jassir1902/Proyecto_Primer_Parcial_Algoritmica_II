@@ -18,11 +18,11 @@ def extraer_texto_pdf(ruta_pdf):
             texto += page.extract_text() or ""
     return texto
 
-def generar_terminos_dinamicamente(texto, top_n=20):
+def generar_terminos_dinamicamente(texto, top_n=50):
     # (Esta función no cambia, pero el resultado será diferente con las stopwords correctas)
     
     # Usar stopwords en español
-    stop_words = set(stopwords.words('english'))
+    stop_words = set(stopwords.words('spanish'))
 
     tokens = word_tokenize(texto.lower())
     palabras_limpias = [
@@ -35,7 +35,7 @@ def generar_terminos_dinamicamente(texto, top_n=20):
     
     return terminos_clave
 
-def obtener_probabilidades_de_documento(ruta_pdf, top_n=20, prob_exito_total=0.85):
+def obtener_probabilidades_de_documento(ruta_pdf, top_n=50, prob_exito_total=0.85):
     """
     Proceso completo y corregido.
     """
