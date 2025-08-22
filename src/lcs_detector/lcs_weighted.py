@@ -31,7 +31,6 @@ def lcs_weighted(seq1, seq2, weights):
     total_seq1 = sum(weights.get(token[0], 1) for token in seq1)
     total_seq2 = sum(weights.get(token[0], 1) for token in seq2)
     
-    # --- CORRECCIÓN AQUÍ ---
     # Si el peso total de ambas secuencias es 0, la similitud también es 0.
     denominator = total_seq1 + total_seq2
     if denominator == 0:
