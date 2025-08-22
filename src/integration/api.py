@@ -77,5 +77,6 @@ def comparar_archivos_codigo_api(ruta_archivo1, ruta_archivo2):
     return {
         "status": "success",
         "similitud": similarity,
-        "lcs_sequence": lcs_seq
+        "lcs_sequence": lcs_seq,
+        "score" : score
     }

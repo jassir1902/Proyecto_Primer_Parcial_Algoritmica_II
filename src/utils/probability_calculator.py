@@ -21,8 +21,8 @@ def extraer_texto_pdf(ruta_pdf):
 def generar_terminos_dinamicamente(texto, top_n=20):
     # (Esta función no cambia, pero el resultado será diferente con las stopwords correctas)
     
-    # CORRECCIÓN 1: Usar stopwords en español
-    stop_words = set(stopwords.words('spanish'))
+    # Usar stopwords en español
+    stop_words = set(stopwords.words('english'))
 
     tokens = word_tokenize(texto.lower())
     palabras_limpias = [
