@@ -264,8 +264,8 @@ class ProjectAnalysisFrame(tk.Frame):
 
         response = comparar_archivos_codigo_api(file1, file2)
         if response['status'] == 'success':
-            lcs_str = ' '.join(response['lcs_sequence']) if response['lcs_sequence'] else "Ninguna"
-            message = f"Análisis LCS completado.\n\nSimilitud: {response['similitud']:.2%}\n\nSecuencia Común Más Larga:\n{lcs_str}"
+            lcs_str = ' '.join(response['lcs_normalized']) if response['lcs_normalized'] else "Ninguna"
+            message = f"Análisis LCS completado.\n\nSimilitud: {response['score']:.2%}\n\nSecuencia Común Más Larga:\n{lcs_str}"
             messagebox.showinfo("Resultado Análisis LCS", message)
         else:
             messagebox.showerror("Error de Análisis", response['message'])
@@ -316,8 +316,8 @@ class IndividualToolsFrame(tk.Frame):
 
         response = comparar_archivos_codigo_api(file1, file2)
         if response['status'] == 'success':
-            lcs_str = ' '.join(response['lcs_sequence']) if response['lcs_sequence'] else "Ninguna"
-            message = f"Análisis LCS completado.\n\nSimilitud: {response['similitud']:.2%}\n\nSecuencia Común Más Larga:\n{lcs_str}"
+            lcs_str = ' '.join(response['lcs_normalized']) if response['lcs_normalized'] else "Ninguna"
+            message = f"Análisis LCS completado.\n\nSimilitud: {response['score']:.2%}\n\nSecuencia Común Más Larga:\n{lcs_str}"
             messagebox.showinfo("Resultado Análisis LCS", message)
         else:
             messagebox.showerror("Error de Análisis", response['message'])

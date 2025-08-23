@@ -40,7 +40,7 @@ def ejecutar_prueba_lcs_api():
     except Exception as e:
         print(f"\n❌ ERROR: Ocurrió un error al llamar a la función de la API.")
         print(f"   Asegúrate de que la función 'comparar_archivos_codigo_api' en 'src/integration/api.py'")
-        print(f"   y sus dependencias ('tokenize_code', 'comparar_archivos_codigo_api') estén completas y sin errores.")
+        print(f"   y sus dependencias estén completas y sin errores.")
         print(f"   Error original: {e}")
         return
 
@@ -53,7 +53,7 @@ def ejecutar_prueba_lcs_api():
 
     # Extraemos los datos del diccionario devuelto por la API
     score = resultado.get("score", 0.0)
-    lcs_sequence = resultado.get("lcs_sequence", [])
+    lcs_sequence = resultado.get("lcs_normalized", [])
 
     print("-" * 40)
     print(f"Score de Similitud Ponderado: {score:.4f}")

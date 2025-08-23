@@ -2,14 +2,13 @@
 
 import os
 from ..projects_management.project_manager import cargar_proyectos
-# No necesitamos importar registrar/eliminar aquí, se manejan en su propio módulo.
 from ..obst.obst import optimal_bst, reconstruir_arbol
 from ..lcs_detector.lcs_weighted import lcs_weighted
-from ..lcs_detector.tokenizer import tokenize_code
+from ..lcs_detector.comparator import CodeComparator 
 from ..utils.probability_calculator import obtener_probabilidades_de_documento
 from ..obst.tree_utils import dibujar_arbol
 
-# --- API de Gestión de Proyectos (Sin cambios, ya era correcta) ---
+# --- API de Gestión de Proyectos ---
 
 def registrar_proyecto_api(nombre, ruta_codigo, ruta_documento):
     from ..projects_management.project_manager import registrar_proyecto
@@ -42,7 +41,6 @@ def analizar_documentacion_api(proyecto_nombre):
     if not proyecto:
         return {"status": "error", "message": "Proyecto no encontrado"}
 
-    # --- CORRECCIÓN CLAVE ---
     # Ahora usamos la generación dinámica de términos y probabilidades.
     terminos, p, q = obtener_probabilidades_de_documento(proyecto.ruta_documento)
 
@@ -51,7 +49,6 @@ def analizar_documentacion_api(proyecto_nombre):
 
     costo, root_table = optimal_bst(terminos, p, q)
 
-    # --- NUEVA LÓGICA ---
     # 2. Reconstruir el árbol a partir de la tabla de raíces
     print("Reconstruyendo el árbol para visualización...")
     n = len(terminos)
@@ -65,7 +62,6 @@ def analizar_documentacion_api(proyecto_nombre):
         dibujar_arbol(arbol_reconstruido_root, filename=nombre_archivo_arbol)
     else:
         print("No se pudo reconstruir el árbol para dibujarlo.")
-    # --- FIN DE LA NUEVA LÓGICA ---
 
     return {
         "status": "success",
@@ -74,26 +70,38 @@ def analizar_documentacion_api(proyecto_nombre):
         "costo_obst": costo
     }
 
-def comparar_archivos_codigo_api(ruta_archivo1, ruta_archivo2):
+
+
+def comparar_archivos_codigo_api(ruta_archivo1: str, ruta_archivo2: str, custom_weights: dict = None):
     """
-    Compara dos archivos de código (rutas absolutas) usando LCS ponderada.
+    Compara dos archivos de código usando la nueva arquitectura `CodeComparator`.
+
+    Args:
+        ruta_archivo1 (str): Ruta absoluta al primer archivo.
+        ruta_archivo2 (str): Ruta absoluta al segundo archivo.
+        custom_weights (dict, optional): Un diccionario de pesos personalizado para
+                                          sobrescribir los pesos por defecto en esta
+                                          comparación específica.
     """
     if not os.path.exists(ruta_archivo1) or not os.path.exists(ruta_archivo2):
         return {"status": "error", "message": "Uno o ambos archivos no existen."}
 
-    with open(ruta_archivo1, 'r', encoding='utf-8') as f1, open(ruta_archivo2, 'r', encoding='utf-8') as f2:
-        codigo1 = f1.read()
-        codigo2 = f2.read()
+    try:
+        with open(ruta_archivo1, 'r', encoding='utf-8') as f1, open(ruta_archivo2, 'r', encoding='utf-8') as f2:
+            codigo1 = f1.read()
+            codigo2 = f2.read()
+    except Exception as e:
+        return {"status": "error", "message": f"Error al leer los archivos: {e}"}
 
-    tokens1 = tokenize_code(codigo1)
-    tokens2 = tokenize_code(codigo2)
-    weights = {'keyword': 2.0, 'operator': 1.5, 'identifier': 1.0}
+    # 1. Instanciamos el comparador. Si se pasan pesos personalizados, los usamos.
+    comparator = CodeComparator(weights=custom_weights)
     
-    score, lcs_seq, similarity = lcs_weighted(tokens1, tokens2, weights)
-
+    # 2. Llamamos al método `compare` que encapsula toda la lógica.
+    resultado = comparator.compare(codigo1, codigo2)
+    
+    # 3. Devolvemos una respuesta unificada.
     return {
         "status": "success",
-        "similitud": similarity,
-        "lcs_sequence": lcs_seq,
-        "score" : score
+        "score": resultado["similarity_score"],
+        "lcs_normalized": resultado["common_sequence"] # La secuencia de tokens normalizados
     }
