@@ -1,4 +1,4 @@
-# src/obst/obst.py
+# src/obst/old_obst.py
 from .tree_utils import Node 
 
 def optimal_bst(keys, p, q):
@@ -69,6 +69,7 @@ def reconstruir_arbol(ROOT, keys, i, j):
     # dependiendo de cómo se construyó. Asumiendo que se guardó como ROOT[i][j].
     # La clave está en keys[r-1] porque `keys` es 0-indexada.
     
+    # Esta es una implementación más segura para la reconstrucción:
     if i == 0 or j == 0 or i > len(ROOT) or j > len(ROOT[0]):
          return None # No hay raíz para este rango
     
